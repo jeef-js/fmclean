@@ -11,23 +11,30 @@ variables P Q R : Prop
 theorem doubleneg_intro :
   P → ¬¬P  :=
 begin
-  intro h1,
-  intro h2,
+  intros p not_p,
   contradiction,
 end
 
 theorem doubleneg_elim :
   ¬¬P → P  :=
 begin
-  sorry,
-  -- Not Finished
+  intro double_not_p,
+  by_cases not_p : P,
+    apply not_p,
+  have := double_not_p not_p,
+  contradiction,
 end
 
 theorem doubleneg_law :
   ¬¬P ↔ P  :=
 begin
   split,
-  -- Not Finished
+  -- ⊢ ¬¬P → P
+  have doubleneg_elim := doubleneg_elim,
+  apply doubleneg_elim,
+  -- ⊢ P → ¬¬P
+  have doubleneg_intro := doubleneg_intro,
+  apply doubleneg_intro,
 end
 
 ------------------------------------------------
@@ -37,24 +44,25 @@ end
 theorem disj_comm :
   (P ∨ Q) → (Q ∨ P)  :=
 begin
-  intro pq,
-  cases pq with left_pq right_pq,
+  intro p_or_q,
+  cases p_or_q,
   right,
-    apply left_pq,
+    apply p_or_q,
   left,
-    apply right_pq,
+    apply p_or_q,
 end
 
 theorem conj_comm :
   (P ∧ Q) → (Q ∧ P)  :=
 begin
-  intro pq,
-  cases pq with left_pq right_pq,
+  intro p_and_q,
+  cases p_and_q,
   split,
-  apply right_pq,
-  apply left_pq,
+  -- ⊢ Q
+  apply p_and_q_right,
+  -- ⊢ P
+  apply p_and_q_left,
 end
-
 
 ------------------------------------------------
 -- Proposições de interdefinabilidade dos →,∨:
@@ -63,21 +71,23 @@ end
 theorem impl_as_disj_converse :
   (¬P ∨ Q) → (P → Q)  :=
 begin
-  intro pq,
-  intro p,
-  cases pq with left_pq right_pq,
+  intros not_p_or_q p,
+  cases not_p_or_q,
+  -- Case (-P)
   contradiction,
-  apply right_pq,
+  -- Case (Q)
+  apply not_p_or_q,
 end
 
 theorem disj_as_impl :
   (P ∨ Q) → (¬P → Q)  :=
 begin
-  intro pq,
-  intro notP,
-  cases pq with left_pq right_pq,
+  intros p_or_q not_p,
+  cases p_or_q,
+  -- Case (P)
   contradiction,
-  apply right_pq,
+  -- Case (Q),
+  apply p_or_q,
 end
 
 
@@ -88,33 +98,31 @@ end
 theorem impl_as_contrapositive :
   (P → Q) → (¬Q → ¬P)  :=
 begin
-  intro pq,
-  intro notQ,
-  intro p,
-  have q : Q := pq p,
+  intros p_impl_q not_q p,
+  have q : Q := p_impl_q p,
   contradiction,
 end
 
 theorem impl_as_contrapositive_converse :
   (¬Q → ¬P) → (P → Q)  :=
 begin
-  intro qp,
-  intro p,
-  -- Not Finished
+  intros not_q_impl_not_p p,
+  by_cases not_q : Q,
+  apply not_q,
+  have not_p : ¬P := not_q_impl_not_p not_q,
+  contradiction,
 end
 
 theorem contrapositive_law :
   (P → Q) ↔ (¬Q → ¬P)  :=
 begin
   split,
-  intro pq,
-  intro notQ,
-  intro p,
-  have q : Q := pq p,
-  contradiction,
-  intro pq,
-  intro p,
-  -- Not Finished
+  -- ⊢ (P → Q) → ¬Q → ¬P
+  have impl_as_contrapositive := impl_as_contrapositive,
+  apply impl_as_contrapositive,
+  -- ⊢ (¬Q → ¬P) → P → Q
+  have impl_as_contrapositive_converse := impl_as_contrapositive_converse,
+  apply impl_as_contrapositive_converse,
 end
 
 
@@ -125,8 +133,15 @@ end
 theorem lem_irrefutable :
   ¬¬(P∨¬P)  :=
 begin
-  intro notPp,
-  -- Not Finished
+  intro not_p_or_not_p,
+  have p_or_not_p : P ∨ ¬P,
+    right,
+    intro p,
+    have p_or_not_p' : P ∨ ¬P,
+      left,
+      exact p,
+      contradiction,
+    contradiction,
 end
 
 
@@ -137,9 +152,12 @@ end
 theorem peirce_law_weak :
   ((P → Q) → P) → ¬¬P  :=
 begin
-  intro pqp,
-  intro notP,
-  -- Not Finished
+  intros p_impl_q_impl_p not_p,
+  have p_impl_q : (P → Q),
+    intro p,
+    contradiction,
+  have p : P := p_impl_q_impl_p p_impl_q,
+  contradiction,
 end
 
 
@@ -150,22 +168,24 @@ end
 theorem disj_as_negconj :
   P∨Q → ¬(¬P∧¬Q)  :=
 begin
-  intro pq,
-  intro notPq,
-  cases notPq with left_notPq right_notPq,
-  cases pq with left_pq right_pq,
+  intros p_or_q not_p_and_not_q,
+  cases not_p_and_not_q,
+  cases p_or_q,
+  -- Case (P)
   contradiction,
+  -- Case (Q)
   contradiction,
 end
 
 theorem conj_as_negdisj :
   P∧Q → ¬(¬P∨¬Q)  :=
 begin
-  intro pq,
-  intro notPq,
-  cases pq with left_pq right_pq,
-  cases notPq with left_notPq right_notPq,
+  intros p_or_q not_p_and_not_q,
+  cases p_or_q,
+  cases not_p_and_not_q,
+  -- Case (¬P)
   contradiction,
+  -- Case (¬Q)
   contradiction,
 end
 
@@ -177,41 +197,86 @@ end
 theorem demorgan_disj :
   ¬(P∨Q) → (¬P ∧ ¬Q)  :=
 begin
-  sorry,
+  intro not_p_or_q,
+  split,
+  -- ⊢ ¬P
+  intro p,
+  have p_or_q : P∨Q,
+    left,
+    apply p,
+  contradiction,
+  -- ⊢ ¬Q
+  intro q,
+  have p_or_q : P∨Q,
+    right,
+    apply q,
+  contradiction,
 end
 
 theorem demorgan_disj_converse :
   (¬P ∧ ¬Q) → ¬(P∨Q)  :=
 begin
-  sorry,
+  intros not_p_and_not_q p_or_q,
+  cases not_p_and_not_q,
+  cases p_or_q,
+  -- Case (P)
+  contradiction,
+  -- Case (Q)
+  contradiction,
 end
 
 theorem demorgan_conj :
   ¬(P∧Q) → (¬Q ∨ ¬P)  :=
 begin
-  sorry,
+  intro not_p_and_q,
+  by_cases not_p : P,
+  left,
+  intro q,
+  have p_and_q : P∧Q,
+    split,
+    -- ⊢ P
+    apply not_p,
+    -- ⊢ Q
+    apply q,
+    contradiction,
+  right,
+  contradiction,
 end
 
 theorem demorgan_conj_converse :
   (¬Q ∨ ¬P) → ¬(P∧Q)  :=
 begin
-  sorry,
+  intros not_q_or_not_p p_and_q,
+  cases p_and_q,
+  cases not_q_or_not_p,
+  -- Case (¬Q)
+  contradiction,
+  -- Case (¬P)
+  contradiction,
 end
 
 theorem demorgan_conj_law :
   ¬(P∧Q) ↔ (¬Q ∨ ¬P)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ ¬(P ∧ Q) → ¬Q ∨ ¬P
+  have demorgan_conj := demorgan_conj,
+  apply demorgan_conj,
+  -- ⊢ ¬Q ∨ ¬P → ¬(P ∧ Q)
+  have demorgan_conj_converse := demorgan_conj_converse,
+  apply demorgan_conj_converse,
 end
 
 theorem demorgan_disj_law :
   ¬(P∨Q) ↔ (¬P ∧ ¬Q)  :=
 begin
   split,
-  intro pq,
-  split,
-  intro p,
-  -- Not Finished
+  -- ⊢ ¬(P ∨ Q) → ¬P ∧ ¬Q
+  have demorgan_disj := demorgan_disj,
+  apply demorgan_disj,
+  -- ⊢ ¬P ∧ ¬Q → ¬(P ∨ Q)
+  have demorgan_disj_converse := demorgan_disj_converse,
+  apply demorgan_disj_converse,
 end
 
 ------------------------------------------------
@@ -243,9 +308,15 @@ begin
   split,
   apply pqr_left,
   left,
-  apply pqr_right,
-  cases pqr,
+  apply pqr_right,theorem demorgan_disj_law :
+  ¬(P∨Q) ↔ (¬P ∧ ¬Q)  :=
+begin
   split,
+  intro pq,
+  split,
+  intro p,
+  -- Not Finished
+end
   apply pqr_left,
   right,
   apply pqr_right,
@@ -272,14 +343,14 @@ end
 theorem distr_disj_conj_converse :
   (P∨Q)∧(P∨R) → P∨(Q∧R)  :=
 begin
-  intro pqpr,
-  cases pqpr,
-  cases pqpr_left,
+  intro p_or_q_and_p_or_r,
   left,
-  apply pqpr_left,
-  right,
-  cases pqpr_right,
-  -- Not Finished
+  cases p_or_q_and_p_or_r,
+  cases p_or_q_and_p_or_r_left,
+  -- Case (P)
+  apply p_or_q_and_p_or_r_left,
+  -- Case (Q)
+  
 end
 
 
@@ -290,17 +361,25 @@ end
 theorem curry_prop :
   ((P∧Q)→R) → (P→(Q→R))  :=
 begin
-  intro pqr,
-  intro p,
-  intro q,
-  have r : R := pqr p q,
-  -- Not Finished
+  intros p_and_q_impl_r p q,
+  have p_and_q : P∧Q,
+    split,
+    -- ⊢ P
+    apply p,
+    -- ⊢ Q
+    apply q,
+  have r : R := p_and_q_impl_r p_and_q,
+  apply r,
 end
 
 theorem uncurry_prop :
   (P→(Q→R)) → ((P∧Q)→R)  :=
 begin
-  sorry,
+  intros p_impl_q_impl_r p_and_q,
+  cases p_and_q,
+  have q_impl_r : Q→R :=  p_impl_q_impl_r p_and_q_left,
+  have r : R := q_impl_r p_and_q_right,
+  apply r,
 end
 
 
@@ -338,9 +417,9 @@ end
 theorem weaken_conj_right :
   (P∧Q) → P  :=
 begin
-  intro pq,
-  cases pq,
-  apply pq_left,
+  intro p_and_q,
+  cases p_and_q,
+  apply p_and_q_left,
 end
 
 theorem weaken_conj_left :
