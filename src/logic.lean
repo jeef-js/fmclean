@@ -139,7 +139,7 @@ begin
     intro p,
     have p_or_not_p' : P ∨ ¬P,
       left,
-      exact p,
+      apply p,
       contradiction,
     contradiction,
 end
@@ -286,71 +286,89 @@ end
 theorem distr_conj_disj :
   P∧(Q∨R) → (P∧Q)∨(P∧R)  :=
 begin
-  intro pqr,
-  cases pqr,
-  cases pqr_right,
-  left,
-  split,
-  apply pqr_left,
-  apply pqr_right,
-  right,
-  split,
-  apply pqr_left,
-  apply pqr_right,
+    intro p_and_q_or_r,
+    cases p_and_q_or_r,
+    cases p_and_q_or_r_right,
+    -- Case (Q)
+        left,
+        split,
+        -- ⊢ P
+        apply p_and_q_or_r_left,
+        -- ⊢ Q
+        apply p_and_q_or_r_right,
+    -- Case (R)
+        right,
+        split,
+        -- ⊢ P
+        apply p_and_q_or_r_left,
+        -- ⊢ R
+        apply p_and_q_or_r_right,
 end
 
 theorem distr_conj_disj_converse :
   (P∧Q)∨(P∧R) → P∧(Q∨R)  :=
 begin
-  intro pqr,
-  cases pqr,
-  cases pqr,
-  split,
-  apply pqr_left,
-  left,
-  apply pqr_right,theorem demorgan_disj_law :
-  ¬(P∨Q) ↔ (¬P ∧ ¬Q)  :=
-begin
-  split,
-  intro pq,
-  split,
-  intro p,
-  -- Not Finished
-end
-  apply pqr_left,
-  right,
-  apply pqr_right,
+  intro p_and_q_or_p_and_r,
+  cases p_and_q_or_p_and_r,
+  -- Case (P ∧ Q)
+    cases p_and_q_or_p_and_r,
+    split,
+    apply p_and_q_or_p_and_r_left,
+    left,
+    apply p_and_q_or_p_and_r_right,
+  -- Case (P ∧ R)
+    cases p_and_q_or_p_and_r,
+    split,
+    apply p_and_q_or_p_and_r_left,
+    right,
+    apply p_and_q_or_p_and_r_right,
 end
 
 theorem distr_disj_conj :
   P∨(Q∧R) → (P∨Q)∧(P∨R)  :=
 begin
-  intro pqr,
-  cases pqr,
-  split,
-  left,
-  apply pqr,
-  left,
-  apply pqr,
-  cases pqr,
-  split,
-  right,
-  apply pqr_left,
-  right,
-  apply pqr_right,
+  intro p_or_q_and_r,
+  cases p_or_q_and_r,
+  -- Case (P)
+    split,
+    -- ⊢ P ∨ Q
+    left,
+    apply p_or_q_and_r,
+    -- ⊢ P ∨ R
+    left,
+    apply p_or_q_and_r,
+  -- Case (Q ∧ R)
+    cases p_or_q_and_r,
+    split,
+    -- ⊢ P ∨ Q
+    right,
+    apply p_or_q_and_r_left,
+    -- ⊢ P ∨ R
+    right,
+    apply p_or_q_and_r_right,
 end
 
 theorem distr_disj_conj_converse :
   (P∨Q)∧(P∨R) → P∨(Q∧R)  :=
 begin
   intro p_or_q_and_p_or_r,
-  left,
   cases p_or_q_and_p_or_r,
   cases p_or_q_and_p_or_r_left,
   -- Case (P)
-  apply p_or_q_and_p_or_r_left,
+    left,
+    apply p_or_q_and_p_or_r_left,
   -- Case (Q)
-  
+    cases p_or_q_and_p_or_r_right,
+    -- Case (P)
+      left,
+      apply p_or_q_and_p_or_r_right,
+    -- Case (R)
+      right,
+      split,
+      -- ⊢ Q
+      apply p_or_q_and_p_or_r_left,
+      -- ⊢ R
+      apply p_or_q_and_p_or_r_right,
 end
 
 
@@ -425,18 +443,20 @@ end
 theorem weaken_conj_left :
   (P∧Q) → Q  :=
 begin
-  intro pq,
-  cases pq,
-  apply pq_right,
+  intro p_and_q,
+  cases p_and_q,
+  apply p_and_q_right,
 end
 
 theorem conj_idempot :
   (P∧P) ↔ P :=
 begin
   split,
-  intro pp,
-  cases pp,
-  apply pp_left,
+  -- ⊢ P ∧ P → P
+  intro p_and_p,
+  cases p_and_p,
+  apply p_and_p_left,
+  -- ⊢ P → P ∧ P
   intro p,
   split,
   apply p,
@@ -447,10 +467,12 @@ theorem disj_idempot :
   (P∨P) ↔ P  :=
 begin
   split,
-  intro pp,
-  cases pp,
-  apply pp,
-  apply pp,
+  -- ⊢ P ∨ P → P
+  intro p_or_p,
+  cases p_or_p,
+  apply p_or_p,
+  apply p_or_p,
+  -- ⊢ P → P ∨ P
   intro p,
   left,
   apply p,
