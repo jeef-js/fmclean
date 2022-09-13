@@ -497,13 +497,20 @@ variables P Q : U -> Prop
 theorem demorgan_exists :
   ¬(∃x, P x) → (∀x, ¬P x)  :=
 begin
-  sorry,
+  intros not_exists x p_x,
+  have contr_not_exists : (∃x, P x),
+    existsi x,
+    apply p_x,
+  contradiction,
 end
 
 theorem demorgan_exists_converse :
   (∀x, ¬P x) → ¬(∃x, P x)  :=
 begin
-  sorry,
+  intros for_all_not_px exists_x_px,
+  cases exists_x_px with x,
+  have := for_all_not_px x,
+  contradiction,
 end
 
 theorem demorgan_forall :
@@ -515,7 +522,10 @@ end
 theorem demorgan_forall_converse :
   (∃x, ¬P x) → ¬(∀x, P x)  :=
 begin
-  sorry,
+  intros exists_not_px forall_px,
+  cases exists_not_px with x,
+  have := forall_px x,
+  contradiction,
 end
 
 theorem demorgan_forall_law :
@@ -527,7 +537,13 @@ end
 theorem demorgan_exists_law :
   ¬(∃x, P x) ↔ (∀x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (¬∃ (x : U), P x) → ∀ (x : U), ¬P x
+  have demorgan_exists := demorgan_exists,
+  apply demorgan_exists,
+  -- ⊢ (∀ (x : U), ¬P x) → (¬∃ (x : U), P x)
+  have demorgan_exists_converse := demorgan_exists_converse,
+  apply demorgan_exists_converse,
 end
 
 
@@ -538,13 +554,19 @@ end
 theorem exists_as_neg_forall :
   (∃x, P x) → ¬(∀x, ¬P x)  :=
 begin
-  sorry,
+  intros exists_px forall_not_px,
+  cases exists_px with x,
+  have := forall_not_px x,
+  contradiction,
 end
 
 theorem forall_as_neg_exists :
   (∀x, P x) → ¬(∃x, ¬P x)  :=
 begin
-  sorry,
+  intros forall_px exists_not_px,
+  cases exists_not_px with x,
+  have := forall_px x,
+  contradiction,
 end
 
 theorem forall_as_neg_exists_converse :
