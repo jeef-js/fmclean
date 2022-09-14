@@ -586,27 +586,52 @@ end
 theorem forall_as_neg_exists_converse :
   ¬(∃x, ¬P x) → (∀x, P x)  :=
 begin
-  sorry,
+  intros not_exists_not_px x,
+  by_contradiction contr_not_exists_not_px,
+  have exists_not_px : (∃x, ¬P x),
+    existsi x,
+    apply contr_not_exists_not_px,
+  contradiction,
 end
 
 theorem exists_as_neg_forall_converse :
   ¬(∀x, ¬P x) → (∃x, P x)  :=
 begin
-  sorry,
+  intro not_forall_not_px,
+  by_contradiction contr_not_forall_not_px,
+  have forall_not_px : (∀x, ¬P x),
+    intro x,
+    intro px,
+    have exists_px : (∃x, P x),
+      existsi x,
+      apply px,
+    contradiction,
+  contradiction,
 end
 
 theorem forall_as_neg_exists_law :
   (∀x, P x) ↔ ¬(∃x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (∀ (x : U), P x) → (¬∃ (x : U), ¬P x)
+  have forall_as_neg_exists := forall_as_neg_exists,
+  apply forall_as_neg_exists,
+  -- ⊢ (¬∃ (x : U), ¬P x) → ∀ (x : U), P x
+  have forall_as_neg_exists_converse := forall_as_neg_exists_converse,
+  apply forall_as_neg_exists_converse,
 end
 
 theorem exists_as_neg_forall_law :
   (∃x, P x) ↔ ¬(∀x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (∃ (x : U), P x) → (¬∀ (x : U), ¬P x)
+  have exists_as_neg_forall := exists_as_neg_forall,
+  apply exists_as_neg_forall,
+  -- ⊢ (¬∀ (x : U), ¬P x) → (∃ (x : U), P x)
+  have exists_as_neg_forall_converse := exists_as_neg_forall_converse,
+  apply exists_as_neg_forall_converse,
 end
-
 
 ------------------------------------------------
 --  Proposições de distributividade de quantificadores:
