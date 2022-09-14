@@ -516,7 +516,15 @@ end
 theorem demorgan_forall :
   ¬(∀x, P x) → (∃x, ¬P x)  :=
 begin
-  sorry,
+  intro not_forall_px,
+  by_contradiction contr_not_forall_px,
+  apply not_forall_px,
+  intro forall_px,
+  by_contradiction contr_forall_px,
+  apply contr_not_forall_px,
+  existsi forall_px,
+  intro not_contr_forall_px,
+  apply contr_forall_px not_contr_forall_px,
 end
 
 theorem demorgan_forall_converse :
@@ -531,7 +539,13 @@ end
 theorem demorgan_forall_law :
   ¬(∀x, P x) ↔ (∃x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (¬∀ (x : U), P x) → (∃ (x : U), ¬P x)
+  have demorgan_forall := demorgan_forall,
+  apply demorgan_forall,
+  -- ⊢ (∃ (x : U), ¬P x) → (¬∀ (x : U), P x)
+  have demorgan_forall_converse := demorgan_forall_converse,
+  apply demorgan_forall_converse,
 end
 
 theorem demorgan_exists_law :
