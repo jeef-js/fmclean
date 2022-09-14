@@ -497,19 +497,19 @@ variables P Q : U -> Prop
 theorem demorgan_exists :
   ¬(∃x, P x) → (∀x, ¬P x)  :=
 begin
-  intros not_exists x p_x,
-  have contr_not_exists : (∃x, P x),
+  intros not_exists_px x px,
+  have contr_not_exists_px : (∃x, P x),
     existsi x,
-    apply p_x,
+    apply px,
   contradiction,
 end
 
 theorem demorgan_exists_converse :
   (∀x, ¬P x) → ¬(∃x, P x)  :=
 begin
-  intros for_all_not_px exists_x_px,
-  cases exists_x_px with x,
-  have := for_all_not_px x,
+  intros forall_not_px exists_px,
+  cases exists_px with x,
+  have := forall_not_px x,
   contradiction,
 end
 
