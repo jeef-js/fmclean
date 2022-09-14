@@ -640,40 +640,95 @@ end
 theorem exists_conj_as_conj_exists :
   (∃x, P x ∧ Q x) → (∃x, P x) ∧ (∃x, Q x)  :=
 begin
-  sorry,
+  intro exists_px_and_qx,
+  cases exists_px_and_qx,
+  split,
+  -- ⊢ ∃ (x : U), P x
+    existsi exists_px_and_qx_w,
+    cases exists_px_and_qx_h,
+      apply exists_px_and_qx_h_left,
+  -- ⊢ ∃ (x : U), Q x
+    existsi exists_px_and_qx_w,
+    cases exists_px_and_qx_h,
+      apply exists_px_and_qx_h_right,
 end
 
 theorem exists_disj_as_disj_exists :
   (∃x, P x ∨ Q x) → (∃x, P x) ∨ (∃x, Q x)  :=
 begin
-  sorry,
+  intro exists_px_or_qx,
+  cases exists_px_or_qx,
+  cases exists_px_or_qx_h,
+  -- Case (P exists_px_or_qx_w)
+    left,
+    existsi exists_px_or_qx_w,
+    apply exists_px_or_qx_h,
+  -- Case (Q exists_px_or_qx_w)
+    right,
+    existsi exists_px_or_qx_w,
+    apply exists_px_or_qx_h,
+  
 end
 
 theorem exists_disj_as_disj_exists_converse :
   (∃x, P x) ∨ (∃x, Q x) → (∃x, P x ∨ Q x)  :=
 begin
-  sorry,
+  intro exists_px_or_exists_qx,
+  cases exists_px_or_exists_qx,
+  -- Case (∃ (x : U), P x)
+    cases exists_px_or_exists_qx,
+      existsi exists_px_or_exists_qx_w,
+      left,
+      apply exists_px_or_exists_qx_h,
+  -- Case (∃ (x : U), Q x)
+    cases exists_px_or_exists_qx,
+      existsi exists_px_or_exists_qx_w,
+      right,
+      apply exists_px_or_exists_qx_h,
 end
 
 theorem forall_conj_as_conj_forall :
   (∀x, P x ∧ Q x) → (∀x, P x) ∧ (∀x, Q x)  :=
 begin
-  sorry,
+  intro forall_px_and_qx,
+  split,
+  -- ⊢ ∀ (x : U), P x
+  intro x,
+  have px_and_qx : (P x ∧ Q x) := forall_px_and_qx x,
+    cases px_and_qx,
+      apply px_and_qx_left,
+  -- ⊢ ∀ (x : U), Q x
+  intro x,
+  have px_and_qx : (P x ∧ Q x) := forall_px_and_qx x,
+    cases px_and_qx,
+      apply px_and_qx_right,
 end
 
 theorem forall_conj_as_conj_forall_converse :
   (∀x, P x) ∧ (∀x, Q x) → (∀x, P x ∧ Q x)  :=
 begin
-  sorry,
+  intro forall_px_and_forall_qx,
+  cases forall_px_and_forall_qx,
+  intro forall_px_and_qx,
+  split,
+  -- ⊢ P forall_px_and_qx
+  apply forall_px_and_forall_qx_left,
+  -- ⊢ Q forall_px_and_qx
+  apply forall_px_and_forall_qx_right,
 end
-
 
 theorem forall_disj_as_disj_forall_converse :
   (∀x, P x) ∨ (∀x, Q x) → (∀x, P x ∨ Q x)  :=
 begin
-  sorry,
+  intros forall_px_or_forall_qx forall_px_or_qx,
+  cases forall_px_or_forall_qx,
+  -- Case (∀ (x : U), P x)
+    left,
+    apply forall_px_or_forall_qx,
+  -- Case (∀ (x : U), Q x)
+    right,
+    apply forall_px_or_forall_qx,
 end
-
 
 /- NOT THEOREMS --------------------------------
 
