@@ -139,7 +139,7 @@ begin
     intro p,
     have p_or_not_p' : P ∨ ¬P,
       left,
-      exact p,
+      apply p,
       contradiction,
     contradiction,
 end
@@ -286,71 +286,89 @@ end
 theorem distr_conj_disj :
   P∧(Q∨R) → (P∧Q)∨(P∧R)  :=
 begin
-  intro pqr,
-  cases pqr,
-  cases pqr_right,
-  left,
-  split,
-  apply pqr_left,
-  apply pqr_right,
-  right,
-  split,
-  apply pqr_left,
-  apply pqr_right,
+    intro p_and_q_or_r,
+    cases p_and_q_or_r,
+    cases p_and_q_or_r_right,
+    -- Case (Q)
+        left,
+        split,
+        -- ⊢ P
+        apply p_and_q_or_r_left,
+        -- ⊢ Q
+        apply p_and_q_or_r_right,
+    -- Case (R)
+        right,
+        split,
+        -- ⊢ P
+        apply p_and_q_or_r_left,
+        -- ⊢ R
+        apply p_and_q_or_r_right,
 end
 
 theorem distr_conj_disj_converse :
   (P∧Q)∨(P∧R) → P∧(Q∨R)  :=
 begin
-  intro pqr,
-  cases pqr,
-  cases pqr,
-  split,
-  apply pqr_left,
-  left,
-  apply pqr_right,theorem demorgan_disj_law :
-  ¬(P∨Q) ↔ (¬P ∧ ¬Q)  :=
-begin
-  split,
-  intro pq,
-  split,
-  intro p,
-  -- Not Finished
-end
-  apply pqr_left,
-  right,
-  apply pqr_right,
+  intro p_and_q_or_p_and_r,
+  cases p_and_q_or_p_and_r,
+  -- Case (P ∧ Q)
+    cases p_and_q_or_p_and_r,
+    split,
+    apply p_and_q_or_p_and_r_left,
+    left,
+    apply p_and_q_or_p_and_r_right,
+  -- Case (P ∧ R)
+    cases p_and_q_or_p_and_r,
+    split,
+    apply p_and_q_or_p_and_r_left,
+    right,
+    apply p_and_q_or_p_and_r_right,
 end
 
 theorem distr_disj_conj :
   P∨(Q∧R) → (P∨Q)∧(P∨R)  :=
 begin
-  intro pqr,
-  cases pqr,
-  split,
-  left,
-  apply pqr,
-  left,
-  apply pqr,
-  cases pqr,
-  split,
-  right,
-  apply pqr_left,
-  right,
-  apply pqr_right,
+  intro p_or_q_and_r,
+  cases p_or_q_and_r,
+  -- Case (P)
+    split,
+    -- ⊢ P ∨ Q
+    left,
+    apply p_or_q_and_r,
+    -- ⊢ P ∨ R
+    left,
+    apply p_or_q_and_r,
+  -- Case (Q ∧ R)
+    cases p_or_q_and_r,
+    split,
+    -- ⊢ P ∨ Q
+    right,
+    apply p_or_q_and_r_left,
+    -- ⊢ P ∨ R
+    right,
+    apply p_or_q_and_r_right,
 end
 
 theorem distr_disj_conj_converse :
   (P∨Q)∧(P∨R) → P∨(Q∧R)  :=
 begin
   intro p_or_q_and_p_or_r,
-  left,
   cases p_or_q_and_p_or_r,
   cases p_or_q_and_p_or_r_left,
   -- Case (P)
-  apply p_or_q_and_p_or_r_left,
+    left,
+    apply p_or_q_and_p_or_r_left,
   -- Case (Q)
-  
+    cases p_or_q_and_p_or_r_right,
+    -- Case (P)
+      left,
+      apply p_or_q_and_p_or_r_right,
+    -- Case (R)
+      right,
+      split,
+      -- ⊢ Q
+      apply p_or_q_and_p_or_r_left,
+      -- ⊢ R
+      apply p_or_q_and_p_or_r_right,
 end
 
 
@@ -425,18 +443,20 @@ end
 theorem weaken_conj_left :
   (P∧Q) → Q  :=
 begin
-  intro pq,
-  cases pq,
-  apply pq_right,
+  intro p_and_q,
+  cases p_and_q,
+  apply p_and_q_right,
 end
 
 theorem conj_idempot :
   (P∧P) ↔ P :=
 begin
   split,
-  intro pp,
-  cases pp,
-  apply pp_left,
+  -- ⊢ P ∧ P → P
+  intro p_and_p,
+  cases p_and_p,
+  apply p_and_p_left,
+  -- ⊢ P → P ∧ P
   intro p,
   split,
   apply p,
@@ -447,10 +467,12 @@ theorem disj_idempot :
   (P∨P) ↔ P  :=
 begin
   split,
-  intro pp,
-  cases pp,
-  apply pp,
-  apply pp,
+  -- ⊢ P ∨ P → P
+  intro p_or_p,
+  cases p_or_p,
+  apply p_or_p,
+  apply p_or_p,
+  -- ⊢ P → P ∨ P
   intro p,
   left,
   apply p,
@@ -475,37 +497,67 @@ variables P Q : U -> Prop
 theorem demorgan_exists :
   ¬(∃x, P x) → (∀x, ¬P x)  :=
 begin
-  sorry,
+  intros not_exists_px x px,
+  have contr_not_exists_px : (∃x, P x),
+    existsi x,
+    apply px,
+  contradiction,
 end
 
 theorem demorgan_exists_converse :
   (∀x, ¬P x) → ¬(∃x, P x)  :=
 begin
-  sorry,
+  intros forall_not_px exists_px,
+  cases exists_px with x,
+  have := forall_not_px x,
+  contradiction,
 end
 
 theorem demorgan_forall :
   ¬(∀x, P x) → (∃x, ¬P x)  :=
 begin
-  sorry,
+  intro not_forall_px,
+  by_contradiction contr_not_forall_px,
+  apply not_forall_px,
+  intro forall_px,
+  by_contradiction contr_forall_px,
+  apply contr_not_forall_px,
+  existsi forall_px,
+  intro not_contr_forall_px,
+  apply contr_forall_px not_contr_forall_px,
 end
 
 theorem demorgan_forall_converse :
   (∃x, ¬P x) → ¬(∀x, P x)  :=
 begin
-  sorry,
+  intros exists_not_px forall_px,
+  cases exists_not_px with x,
+  have := forall_px x,
+  contradiction,
 end
 
 theorem demorgan_forall_law :
   ¬(∀x, P x) ↔ (∃x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (¬∀ (x : U), P x) → (∃ (x : U), ¬P x)
+  have demorgan_forall := demorgan_forall,
+  apply demorgan_forall,
+  -- ⊢ (∃ (x : U), ¬P x) → (¬∀ (x : U), P x)
+  have demorgan_forall_converse := demorgan_forall_converse,
+  apply demorgan_forall_converse,
 end
 
 theorem demorgan_exists_law :
   ¬(∃x, P x) ↔ (∀x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (¬∃ (x : U), P x) → ∀ (x : U), ¬P x
+  have demorgan_exists := demorgan_exists,
+  apply demorgan_exists,
+  -- ⊢ (∀ (x : U), ¬P x) → (¬∃ (x : U), P x)
+  have demorgan_exists_converse := demorgan_exists_converse,
+  apply demorgan_exists_converse,
 end
 
 
@@ -516,39 +568,70 @@ end
 theorem exists_as_neg_forall :
   (∃x, P x) → ¬(∀x, ¬P x)  :=
 begin
-  sorry,
+  intros exists_px forall_not_px,
+  cases exists_px with x,
+  have := forall_not_px x,
+  contradiction,
 end
 
 theorem forall_as_neg_exists :
   (∀x, P x) → ¬(∃x, ¬P x)  :=
 begin
-  sorry,
+  intros forall_px exists_not_px,
+  cases exists_not_px with x,
+  have := forall_px x,
+  contradiction,
 end
 
 theorem forall_as_neg_exists_converse :
   ¬(∃x, ¬P x) → (∀x, P x)  :=
 begin
-  sorry,
+  intros not_exists_not_px x,
+  by_contradiction contr_not_exists_not_px,
+  have exists_not_px : (∃x, ¬P x),
+    existsi x,
+    apply contr_not_exists_not_px,
+  contradiction,
 end
 
 theorem exists_as_neg_forall_converse :
   ¬(∀x, ¬P x) → (∃x, P x)  :=
 begin
-  sorry,
+  intro not_forall_not_px,
+  by_contradiction contr_not_forall_not_px,
+  have forall_not_px : (∀x, ¬P x),
+    intro x,
+    intro px,
+    have exists_px : (∃x, P x),
+      existsi x,
+      apply px,
+    contradiction,
+  contradiction,
 end
 
 theorem forall_as_neg_exists_law :
   (∀x, P x) ↔ ¬(∃x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (∀ (x : U), P x) → (¬∃ (x : U), ¬P x)
+  have forall_as_neg_exists := forall_as_neg_exists,
+  apply forall_as_neg_exists,
+  -- ⊢ (¬∃ (x : U), ¬P x) → ∀ (x : U), P x
+  have forall_as_neg_exists_converse := forall_as_neg_exists_converse,
+  apply forall_as_neg_exists_converse,
 end
 
 theorem exists_as_neg_forall_law :
   (∃x, P x) ↔ ¬(∀x, ¬P x)  :=
 begin
-  sorry,
+  split,
+  -- ⊢ (∃ (x : U), P x) → (¬∀ (x : U), ¬P x)
+  have exists_as_neg_forall := exists_as_neg_forall,
+  apply exists_as_neg_forall,
+  -- ⊢ (¬∀ (x : U), ¬P x) → (∃ (x : U), P x)
+  have exists_as_neg_forall_converse := exists_as_neg_forall_converse,
+  apply exists_as_neg_forall_converse,
 end
-
 
 ------------------------------------------------
 --  Proposições de distributividade de quantificadores:
@@ -557,40 +640,95 @@ end
 theorem exists_conj_as_conj_exists :
   (∃x, P x ∧ Q x) → (∃x, P x) ∧ (∃x, Q x)  :=
 begin
-  sorry,
+  intro exists_px_and_qx,
+  cases exists_px_and_qx,
+  split,
+  -- ⊢ ∃ (x : U), P x
+    existsi exists_px_and_qx_w,
+    cases exists_px_and_qx_h,
+      apply exists_px_and_qx_h_left,
+  -- ⊢ ∃ (x : U), Q x
+    existsi exists_px_and_qx_w,
+    cases exists_px_and_qx_h,
+      apply exists_px_and_qx_h_right,
 end
 
 theorem exists_disj_as_disj_exists :
   (∃x, P x ∨ Q x) → (∃x, P x) ∨ (∃x, Q x)  :=
 begin
-  sorry,
+  intro exists_px_or_qx,
+  cases exists_px_or_qx,
+  cases exists_px_or_qx_h,
+  -- Case (P exists_px_or_qx_w)
+    left,
+    existsi exists_px_or_qx_w,
+    apply exists_px_or_qx_h,
+  -- Case (Q exists_px_or_qx_w)
+    right,
+    existsi exists_px_or_qx_w,
+    apply exists_px_or_qx_h,
+  
 end
 
 theorem exists_disj_as_disj_exists_converse :
   (∃x, P x) ∨ (∃x, Q x) → (∃x, P x ∨ Q x)  :=
 begin
-  sorry,
+  intro exists_px_or_exists_qx,
+  cases exists_px_or_exists_qx,
+  -- Case (∃ (x : U), P x)
+    cases exists_px_or_exists_qx,
+      existsi exists_px_or_exists_qx_w,
+      left,
+      apply exists_px_or_exists_qx_h,
+  -- Case (∃ (x : U), Q x)
+    cases exists_px_or_exists_qx,
+      existsi exists_px_or_exists_qx_w,
+      right,
+      apply exists_px_or_exists_qx_h,
 end
 
 theorem forall_conj_as_conj_forall :
   (∀x, P x ∧ Q x) → (∀x, P x) ∧ (∀x, Q x)  :=
 begin
-  sorry,
+  intro forall_px_and_qx,
+  split,
+  -- ⊢ ∀ (x : U), P x
+  intro x,
+  have px_and_qx : (P x ∧ Q x) := forall_px_and_qx x,
+    cases px_and_qx,
+      apply px_and_qx_left,
+  -- ⊢ ∀ (x : U), Q x
+  intro x,
+  have px_and_qx : (P x ∧ Q x) := forall_px_and_qx x,
+    cases px_and_qx,
+      apply px_and_qx_right,
 end
 
 theorem forall_conj_as_conj_forall_converse :
   (∀x, P x) ∧ (∀x, Q x) → (∀x, P x ∧ Q x)  :=
 begin
-  sorry,
+  intro forall_px_and_forall_qx,
+  cases forall_px_and_forall_qx,
+  intro forall_px_and_qx,
+  split,
+  -- ⊢ P forall_px_and_qx
+  apply forall_px_and_forall_qx_left,
+  -- ⊢ Q forall_px_and_qx
+  apply forall_px_and_forall_qx_right,
 end
-
 
 theorem forall_disj_as_disj_forall_converse :
   (∀x, P x) ∨ (∀x, Q x) → (∀x, P x ∨ Q x)  :=
 begin
-  sorry,
+  intros forall_px_or_forall_qx forall_px_or_qx,
+  cases forall_px_or_forall_qx,
+  -- Case (∀ (x : U), P x)
+    left,
+    apply forall_px_or_forall_qx,
+  -- Case (∀ (x : U), Q x)
+    right,
+    apply forall_px_or_forall_qx,
 end
-
 
 /- NOT THEOREMS --------------------------------
 
