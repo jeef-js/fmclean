@@ -224,19 +224,22 @@
     },
     {
       "lean": "example (P Q : Prop) (p : P) (q : Q) : P ∧ Q :=\n",
-      "editorText": "sorry"
+      "isSolved": true,
+      "editorText": "split,\r\n-- ⊢ P\r\napply p,\r\n-- ⊢ Q\r\napply q,"
     },
     {
       "lean": "lemma and_symm (P Q : Prop) : P ∧ Q → Q ∧ P :=\n",
-      "editorText": "sorry"
+      "isSolved": true,
+      "editorText": "intro p_and_q,\r\ncases p_and_q with p q,\r\nsplit,\r\n-- ⊢ Q\r\napply q,\r\n-- ⊢ P\r\napply p,"
     },
     {
       "lean": "lemma and_trans (P Q R : Prop) : P ∧ Q → Q ∧ R → P ∧ R :=\n",
-      "editorText": "sorry"
+      "isSolved": true,
+      "editorText": "intros p_and_q q_and_r,\r\ncases p_and_q with p q,\r\ncases q_and_r with q' r,\r\nsplit,\r\n-- ⊢ P\r\napply p,\r\n-- ⊢ R\r\napply r,"
     },
     {
       "lean": "lemma iff_trans (P Q R : Prop) : (P ↔ Q) → (Q ↔ R) → (P ↔ R) :=\n",
-      "editorText": "sorry"
+      "editorText": "intros if_p_then_q if_q_then_r,\r\ncases if_p_then_q with p_impl_q q_impl_p,\r\ncases if_q_then_r with q_impl_r r_impl_q,\r\nsplit,\r\n-- ⊢ P → R\r\nhave p_impl_r : P → R,\r\nintro p,\r\napply q_impl_r,\r\napply p_impl_q,\r\napply p,\r\napply p_impl_r,\r\n-- ⊢ R → P\r\nhave r_impl_p : R → P,\r\nintro r,\r\napply q_impl_p,\r\napply r_impl_q,\r\napply r,\r\napply r_impl_p,"
     },
     {
       "lean": "lemma iff_trans (P Q R : Prop) : (P ↔ Q) → (Q ↔ R) → (P ↔ R) :=\n",
